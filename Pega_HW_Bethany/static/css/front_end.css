@@ -1,0 +1,347 @@
+
+
+  /* Title區域*/
+  body {
+    background-color:#deccbaa8;
+    background-size: 100%;
+    font-family: "微軟正黑體" !important;
+    margin: 0;
+    background-image: linear-gradient(to bottom, rgb(160, 130, 100) 100px, transparent 0); 
+    background-size: 100% 100px;
+    background-position: 0 0; /* 控制红线的位置在顶部 */
+    background-repeat: repeat-x; /* 沿水平方向重复 */
+    font-size: 18px;
+    font-weight: bold; 
+    color:rgb(50, 50, 50)
+}
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 25px;
+    margin-left: 25px;
+  }
+
+  .page-title {
+    font-size: 2.2rem;            /* 字體大小 */
+    color: #ffffff;               /* 深棕色系，跟背景搭配 */
+    text-align: center;           /* 置中對齊 */
+    margin: 0;
+    letter-spacing: 1px;          /* 字距微調 */
+    font-weight: bold;
+    line-height: 1.4;             /* 行高 */
+  }
+
+  /* 圖片區域*/ 
+
+  .card-container {
+    width: 80%;              /* 限制寬度為 80% */
+    margin: 0 auto;           /* 讓整個容器置中 */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  
+
+  .card {
+    position: relative; /* ⬅️ 為編輯按鈕定位的基準 */
+    background: #F7F2ED;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  /* 卡片中的刪除叉叉按鈕 */
+.card .delete-btn {
+    position: absolute;
+    top: 10px;
+    right:15px;
+    padding: 6px 12px;
+    background-color: transparent;
+    border: none;
+    color: rgb(89, 65, 41);
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    /* padding: 0; */
+    z-index: 1;
+    transition: color 0.3s;
+  }
+  
+  .card .delete-btn:hover {
+    color: red;
+  }
+  
+  .avatar {
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 12px;
+  }
+  .name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+  .info {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 2px;
+    text-align: left;
+    padding-left: 30px;
+  }
+
+  .pagination {
+    margin-top: 20px;
+    display: flex;               /* 改成 flex 容器 */
+    justify-content: center;     /* ⬅️ 水平置中按鈕 */
+    gap: 20px;                   /* 可選：按鈕之間的間距 */
+  }
+  
+  .pagination button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    background-color: rgb(160, 130, 100);     /* 背景色：深紅棕色 */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  
+  .pagination button:hover {
+    background-color: #000000;     /* 滑過時顏色變淺一點 */
+    transform: translateY(-2px);   /* 微微往上浮動 */
+  }
+
+  .edit-btn {
+    position: absolute;
+    top: 10px;
+    right: 55px;
+    padding: 6px 12px;
+    background-color:#F7F2ED;
+    color: rgb(89, 65, 41);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  .edit-btn:hover {
+    color: red;
+    font-weight: bold;
+
+  }
+  /* 編輯彈跳視窗 */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+  
+  .modal-content {
+    background: #fffdf9; /* 溫暖奶油白 */
+    padding: 24px;
+    border-radius: 12px;
+    width: 460px; /* ✅ 增加寬度以容納 label+input */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    font-family: "微軟正黑體", sans-serif;
+  }
+  
+  /* 每個欄位區塊 */
+  .modal-content label {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  /* 輸入欄與下拉選單 */
+  .modal-content input,
+  .modal-content select {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 14px;
+    margin-left: 10px; /* 與 label 保持距離 */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+  }
+  
+  /* 焦點效果 */
+  .modal-content input:focus,
+  .modal-content select:focus {
+    border-color: #a08264;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+  
+  /* 底部按鈕區塊 */
+  .modal-actions {
+    margin-top: 16px;
+    text-align: right;
+  }
+  
+  .modal-actions button {
+    background-color: #a08264;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-left: 10px;
+  }
+  
+  .modal-actions button:hover {
+    background-color: #000000;
+  }
+  
+   /* Table */
+.user-table {
+    width: 80%;
+    margin: 10px auto;
+    border-collapse: collapse;
+    font-family: "微軟正黑體", sans-serif;
+    font-size: 14px;
+    background-color: #fffefb;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    overflow: hidden;
+    table-layout: fixed;     /* ✅ 固定欄寬 */
+  }
+  
+  /* 表頭樣式 */
+  .user-table thead {
+    background-color: #a08264;
+    color: white;
+    font-size: 18px;
+  }
+  
+  
+  /* 表格欄位 */
+  .user-table th,
+  .user-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #F7F2ED;
+    text-align: center;
+  }
+  
+  /* 資料列 hover 效果（避免作用在 thead） */
+  .user-table tbody tr:hover {
+    background-color: #00000069;
+  }
+  
+  /* 操作欄按鈕 */
+  .user-table td:last-child button {
+    margin-right: 6px;
+    padding: 6px 10px;
+    background-color:  #a08264;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold; 
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .user-table td:last-child button:hover {
+    background-color: #000000;
+  }
+
+  /* 新增 */
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    margin: 0 auto 20px auto;
+  }
+  
+  /* .section-header h2 {
+    font-size: 1.5rem;
+    margin: 0;
+  } */
+  
+  .add-user-btn {
+    padding: 8px 14px;
+    background-color: #a08264;
+    color: white;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .add-user-btn:hover {
+    background-color: #000000;
+  }
+  
+/* 搜尋美化 */
+ /* 搜尋欄容器 */
+.section-header.with-search {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0px;
+    padding: 0px 10px;
+    /* background-color: #f9f9f9; */
+    border-radius: 12px;
+    /* box-shadow: 0 2px 4px rgba(0,0,0,0.05); */
+  }
+
+  .section-header.with-search .right {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* 控制搜尋框與按鈕之間的間距 */
+    flex-wrap: nowrap; /* 不換行 */
+  }
+  
+  
+  /* 搜尋欄標籤與輸入框 */
+  .search-label {
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    color: #444;
+  }
+  
+  .search-input {
+    padding: 8px 14px;
+    margin-left: 8px;
+    border: 2px solid #a08264;
+    border-radius: 10px;
+    font-size: 14px;
+    width: 150px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  
+  .search-input::placeholder {
+    color: #aaa;
+  }
+  
+  .search-input:focus {
+    border-color:  #a08264;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(240, 162, 90, 0.2);
+  }
+  

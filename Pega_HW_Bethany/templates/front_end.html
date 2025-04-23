@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Demo_Bethany</title>
+    <link href="../static/css/front_end.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="header">
+        <div class="logo-container">
+            <img src="../logo2.png" alt="Logo" style="height: 100px;">
+            <h1 class="page-title"> User Management System</h1>
+        </div>
+    </div>
+
+    <div id="app" style="margin-top: 60px;">
+
+        <div class="section-header with-search">
+            <div class="left">
+              <h2>使用者清單（Image）</h2>
+            </div>
+            <div class="right">
+              <label class="search-label">搜尋：
+                <input type="text" v-model="searchInput" @input="debouncedSearch" placeholder="🔍 搜尋職業、姓名..." class="search-input">
+              </label>
+              <button @click="openModal" class="add-user-btn">＋ 新增使用者</button>
+            </div>
+          </div>
+
+
+        <div class="card-container">
+            <div class="card" v-for="user in paginatedUsersCard" :key="user.id">
+                 <!-- 左上角的叉叉 -->
+                <button @click="editUser(user)" class="edit-btn">編輯</button>
+                <button class="delete-btn" @click="confirmDeleteUser(user.id)">刪除</button>
+                <!-- <img :src="getUserImage(user)" alt="頭像" class="avatar"> -->
+                <img :src="getUserImage(user)" class="avatar">
+                <div class="name">{{ user.name }}</div>
+                <div class="info">性別：{{ user.gender }}</div>
+                <div class="info">生日：{{ user.birthday }}</div>
+                <div class="info">職業：{{ user.job }}</div>
+                <div class="info">電話：{{ user.phone }}</div>
+            </div>
+        </div>
+
+        <div class="pagination">
+            <button @click="cardPage--" :disabled="cardPage === 1">上一頁</button>
+            <button @click="cardPage++" :disabled="cardPage * pageSize >= filteredUsers.length">下一頁</button>
+        </div>
+
+        <div v-if="showModal" class="modal-overlay">
+            <div class="modal-content">
+                <h3 style="text-align: center;">{{ editingUser ? '編輯使用者資訊' : '新增使用者' }}</h3>
+                <label>姓名：<input v-model="form.name" placeholder="請輸入姓名"></label>
+                <label>性別：<input v-model="form.gender" placeholder="請輸入性別"></label>
+                <label>生日：<input v-model="form.birthday" type="date" placeholder="請選擇生日"></label>
+                <label>職業：
+                    <select v-model="form.job">
+                        <option disabled value="">請選擇職業</option>
+                        <option>學生</option>
+                        <option>工程師</option>
+                        <option>教師</option>
+                        <option>無業</option>
+                    </select>
+                </label>
+                <label>電話：<input v-model="form.phone" placeholder="請輸入電話"></label>
+                <label v-if="!modalFromTable"> 頭像：
+                    <input type="file" @change="onImageUpload">
+                </label>
+                <div class="modal-actions">
+                    <button @click="saveUser">儲存</button>
+                    <button @click="closeModal">取消</button>
+                </div>
+            </div>
+        </div>
+
+        <br></br>
+        <br></br>
+
+        <!-- table -->
+        <div class="section-header with-search">
+            <div class="left">
+              <h2>使用者清單（Table）</h2>
+            </div>
+            <div class="right">
+              <label class="search-label">搜尋：
+                <input type="text" v-model="searchInput" @input="debouncedSearch" placeholder="🔍 搜尋職業、姓名..." class="search-input">
+              </label>
+              <button @click="openModal" class="add-user-btn">＋ 新增使用者</button>
+            </div>
+          </div>
+          
+        <table class="user-table">
+            <thead>
+                <tr>
+                    <th>姓名</th>
+                    <th>性別</th>
+                    <th>生日</th>
+                    <th>職業</th>
+                    <th>電話</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="user in paginatedUsersTable" :key="user.id">
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.gender }}</td>
+                    <td>{{ user.birthday }}</td>
+                    <td>{{ user.job }}</td>
+                    <td>{{ user.phone }}</td>
+                    <td>
+                        <button @click="editUser(user, true)">編輯</button>
+                        <button @click="confirmDeleteUser(user.id)">刪除</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div v-if="confirmDelete" class="modal-overlay">
+            <div class="modal-content">
+                <h3 style="text-align: center;">確定要刪除嗎？</h3>
+                <div class="modal-actions" style="text-align: center; margin-top: 20px;">
+                    <button @click="deleteConfirmed"
+                        style="background-color:rgb(160, 130, 100) ; color: white;">是</button>
+                    <button @click="cancelDelete" style="background-color:rgb(160, 130, 100) ; color: white;">否</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="pagination">
+            <button @click="tablePage--" :disabled="tablePage === 1">上一頁</button>
+            <button @click="tablePage++" :disabled="tablePage * pageSize >= filteredUsers.length">下一頁</button>
+        </div>
+
+        <!-- 新增成功提示視窗 -->
+        <div v-if="showSuccessModal" class="modal-overlay">
+            <div class="modal-content">
+            <!-- <h3 style="text-align: center;">新增成功！</h3> -->
+            <h3 style="text-align: center;">{{ successMessage }}</h3>
+            <div class="modal-actions" style="text-align: center; margin-top: 20px;">
+                <button @click="closeSuccessModal" style="background-color: #a08264; color: white;">關閉</button>
+            </div>
+            </div>
+        </div>
+
+        <!-- 錯誤提示視窗 -->
+        <div v-if="showErrorModal" class="modal-overlay">
+            <div class="modal-content">
+            <h3 style="text-align: center;">"姓名"為必填欄位</h3>
+            <div class="modal-actions" style="text-align: center; margin-top: 20px;">
+                <button @click="closeErrorModal" style="background-color: #a08264; color: white;">關閉</button>
+            </div>
+            </div>
+        </div>
+  
+        
+    </div>
+    <br></br>
+    <br></br>
+
+    <script src="../static/js/Vue.js"></script>
+    <script src="../static/js/moment.min.js"></script>
+    <script src="../static/js/axios.js"></script>
+    <script src="../static/js/jquery.js"></script>
+    <script src="../static/js/front_end.js"></script>
+</body>
+
+</html>
